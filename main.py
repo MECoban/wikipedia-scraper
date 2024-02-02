@@ -1,33 +1,20 @@
-import requests
-from bs4 import BeautifulSoup
-import re
-#from scripts.scraper import WikipediaScraper as ws
-import json
+from src.scraper import WikipediaScraper
 
 
+def main() -> None:
+    """Main function to run the WikipediaScraper and save leaders data to a JSON file."""
+    scraper = WikipediaScraper("https://country-leaders.onrender.com")
+    scraper.refresh_cookie()
+    print("Cookies created")
+    
+    countries = scraper.get_countries()
+    print("Countries:", countries)
+    for country_code in countries:
+        scraper.get_leaders(country_code)
+        print(f"Leaders  {country_code}:", scraper.leaders_data[country_code])
 
-#from scripts.scraper import WikipediaScraper as ws
-
-
-def main():
-    # run the program from here
-    scraper = WikipediaScraper()
-
-    countries = scraper.list_countries()
-    for country in countries:
-        scraper.refresh_cookie()
-        scraper.get_leaders(country)
-
-    scraper.to_json_file("./leaders_data.json")
-    # print(scraper.leaders_data)
-    # for dict in scraper.leaders_data:
-    # url = dict.get("wikipedia_url")
-    # scraper.get_first_paragraph(url)
-
-
-# print(scraper.leaders_data)
-# scraper.to_json_file("./leaders_data.json")
-
+    scraper.to_json_file('leaders_data.json')
+    print("Leaders data saved to leaders_data.json")
 
 if __name__ == "__main__":
     main()
