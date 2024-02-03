@@ -14,72 +14,53 @@ class WikipediaScraper:
         self.cookie = self.refresh_cookie()
 
     def refresh_cookie(self):
-        res_cookie = requests.get(f"{self.base_url}{self.cookies_endpoint}")
-        return res_cookie
+        response = requests.get(self.base_url + self.cookies_endpoint)
+        cookie = response.cookies
+        return response.cookie 
+    
+    def check_status(self, response):
+        if response.status_code != 200:
+            print(f"Error: {response.status_code}, Cookie is missing")
+            self.cookie = self.refresh_cookie()  
 
     def get_countries(self):
        
-        res_country = requests.get(f"{self.base_url}{self.country_endpoint}", cookies=self.refresh_cookie().cookies)
-        if res_country.status_code == 200:
-            return res_country.json()
+        response = requests.get(self.base_url + self.country_endpoint, cookies=self.cookie)
+        countries = response.json()
+        if response.status_code == 200:
+            return countries
         
-        elif res_country.status_code == 403:
-            
-            raise ValueError(f"Error code: {res_country.status_code}, Cookie is missing ")
+        elif response.status_code == 403: 
+            print(f"Error code: {response.status_code}, Cookie is missing ")
+            self.cookie = self.refresh_cookie()
+            return self.get_countries()
             
         else:
-            raise ValueError(f"Error code: {res_country.status_code}, Unknown Error ")
+            raise ValueError(f"Error code: {response.status_code}, Unexpected status code ")
 
     def get_leaders(self, country:str):
       
         param = {'country': country}
-        res_leaders = requests.get(f"{self.base_url}{self.leaders_endpoint}", cookies=self.refresh_cookie().cookies, params=param)
-        
-        if res_leaders.status_code == 200:
-            leaders = res_leaders.json()
+        response = requests.get(self.base_url + self.leaders_endpoint, cookies=self.cookie, params=param)
+        leaders = response.json()
 
-            for leader in leaders:
-
-                self.leaders_info = {"first_name":leader["first_name"], "last_name":leader["last_name"], "birth_date": leader["birth_date"]
-                                 , "wikipedia_url":leader["wikipedia_url"], leader_id : leader["id"]}
-
-
-            self.leaders_info[country] = []
-
-            def get_first_paragraph(wikipedia_url):
-               """returns the first paragraph from the wikipedia url"""
-            response = requests.get(wikipedia_url)
-                soup = BeautifulSoup(response.content, "html.parser")
-                # Find all paragraphs
-                paragraphs = soup.find_all("p")
-                for paragraph in paragraphs:
-                    # Check if the paragraph starts with a <b> tag
-                        if paragraph.find("b"):
-                            return paragraph.text
-                return "No paragraph with bold text found"
-
-                    self.leaders_data[country].append(leader_info)
-        elif res_leaders.status_code != 200:
-            self.refresh_cookie()
-            print("Cookies refreshed")
-
+        if response.status_code == 200:
+            self.leaders_info[country] = leaders
         else:
-            raise ValueError(f"Failed to fetch leaders data for {country}. Status Code: {res_leaders.status_code}")
+            print(f"Error code: {response.status_code} ")
+            self.cookie = self.refresh_cookie()
+            return self.get_leaders()
 
-
-    def get_first_paragraph(self, wikipedia_url: str):
-        
+    def get_first_paragraph(self, wikipedia_url: str):    
         first_paragraph = ""
-
-    
-        r = requests.get(f"{wikipedia_url}").text
-        soup = BeautifulSoup(r, "html.parser")
-        paragraphs = soup.find_all('p')
-        for p in paragraphs:
-            if p.find('b'):
-                first_paragraph = p.text
+        response = requests.get(wikipedia_url)
+        soup = BeautifulSoup(response, "html.parser")
+        paragraphs = soup.find_all("p")
+        for paragraph in paragraphs:
+            if paragraph.find('b'):
+                first_paragraph = paragraph.text
                 break
-            return first_paragraph
+        return first_paragraph
 
             
       
@@ -87,4 +68,9 @@ class WikipediaScraper:
        
         with open(filepath, 'w', encoding= "utf-8") as json_file:
             json.dump(self.leaders_data, json_file, indent = 4, separators=(',', ': '), ensure_ascii=False)
+
+    def clean_paragraph(self, paragraph):
+        pattern = re.compile(r'\[.*?\]|\(.*?\)|<.*?>')
+        cleaned_paragraph = re.sub(pattern, '', paragraph)
+        return cleaned_paragraph        
             
