@@ -2,7 +2,21 @@
 
 ## Overview
 
-The Wikipedia Scraper interacts with a custom API to get information (eader_id" "wikipedia_url", "first_name", "last_name", "birth_date", "place_of_birth", "start_mandate", "end_mandate") about country leaders, and retrieves the first paragraphs from their Wikipedia pages.
+The Wikipedia Scraper pragram interacts with a custom API to get information about country leaders. Extracts the first paragraph from the Wikipedia page of each leader. and cleans up unwanted patterns from the paragraphs using regular expressions. Saves the collected data into a JSON file as:
+
+ - leader_id 
+ - wikipedia_url
+ - first_name
+ - last_name
+ - birth_date
+ - place_of_birth
+ - start_mandate
+ - end_mandate
+- first_paragraphs
+- cleaned_paragraph
+
+Wikipedia Scraper program saves "first_paragraphs" and "cleaned_paragraph". You will be able to see original and cleaned version of Wikipedia paragraph.
+
 
 ### Supported Countries: 
 
