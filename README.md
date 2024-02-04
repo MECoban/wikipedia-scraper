@@ -1,6 +1,6 @@
 # Wikipedia Scraper
 
-## Overview
+# Overview
 
 The Wikipedia Scraper pragram interacts with a custom API to get information about country leaders. Extracts the first paragraph from the Wikipedia page of each leader. and cleans up unwanted patterns from the paragraphs using regular expressions. Saves the collected data into a JSON file as:
 
@@ -18,44 +18,35 @@ The Wikipedia Scraper pragram interacts with a custom API to get information abo
 Wikipedia Scraper program saves "first_paragraphs" and "cleaned_paragraph". You will be able to see original and cleaned version of Wikipedia paragraph.
 
 
-### Supported Countries: 
+## Supported Countries: 
 
 Morocco (Ma), Belgium (Be), Frace (Fr), U.S.A (U.S), Russia (Ru)
 
 
-## Features
-
-* Retrieve a list of supported countries from the API.
-* Get information about leaders for each country.
-* Extract the first paragraph from the Wikipedia page of each leader.
-* Clean up unwanted patterns from the paragraphs using regular expressions.
-* Save the collected data into a JSON file.
-
-## Installation
+# Installation
 
 To install Wikipedia Scraper, follow these steps:
 
-Clone the repository to your machine. 
+1 - Clone the repository to your machine. 
 
 ```
 git clone https://github.com/MECoban/wikipedia-scraper.git
 ```
-
+2 - Go to the wikipedia-scraper directory
 ```
 cd LeaderScraper
 ```
-### Install dependencies
+
+## Install dependencies
 
 Before running the Wikipedia Scraper install the requirements file. For the requirements:
 
  ``` 
  pip install -r requirements.yml
 ```
-## Features
-LeaderScraper provides the following features:
 
+# How to Use
 
-### How to Use
 Run the main.py script using the command:
 ```
 python main.py
@@ -65,7 +56,7 @@ The script will fetch information about supported countries, leaders, and scrape
 The extracted data will be saved to a JSON file named "leaders_data.json".
 
 
-## Contributing
+# Contributing
 If you'd like to contribute to this project, feel free to open an issue or submit a pull request. 
 
 Contributions are welcome!

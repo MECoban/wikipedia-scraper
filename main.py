@@ -1,14 +1,21 @@
 from src.scraper import WikipediaScraper
 
 def main():
+
+    """
+    The main function to execute the WikipediaScraper and store the data into a JSON file.
+    """
+
     scraper = WikipediaScraper()
 
     scraper.refresh_cookie()
 
     countries = scraper.get_countries()
 
+    print("Program is working... This will take 1 min...")
+
     for country in countries:
-        try:
+        try:  # I added try/exept here because there is an error about "be"
             scraper.get_leaders(country)
             for leader in scraper.leaders_data[country]:
                 wikipedia_url = leader.get("wikipedia_url")
